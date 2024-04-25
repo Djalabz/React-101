@@ -1,0 +1,28 @@
+.menu-layout a {
+    margin-right: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+nav {
+    position: fixed;
+    top: 2rem;
+    left: 2rem;
+}
+
+nav li {
+    margin-right: 1rem;
+}
+
+.menu-layout {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    text-align: left;
+    left: 2rem;
+    top: 4rem;
+    padding: 1rem 3rem 1rem 1rem;
+    border: solid 1px gray;
+    z-index: 99;
+    background-color: white;
+}

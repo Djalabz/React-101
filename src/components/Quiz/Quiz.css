@@ -1,0 +1,12 @@
+.quiz div {
+    margin-bottom: 3rem;
+}
+
+.question-section {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.quiz button {
+    margin-right: 0.5rem;
+}

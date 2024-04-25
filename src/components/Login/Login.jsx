@@ -1,0 +1,138 @@
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import './Login.css'
+
+
+
+export default function Login() {
+    const [formData, setFormData] = useState({})
+    const [value, setValue] = useState({
+        username: '',
+        password: '',
+    }) 
+    const [error, setError] = useState("")
+
+    useEffect(() => {
+        // Créer un token d'annulation
+      const cancelTokenSource = axios.CancelToken.source();
+
+        axios.post('http://localhost:3000/login/new', formData, {
+          cancelToken: cancelTokenSource.token
+        })
+        .then((res) => {
+          console.log(res.data)
+          if (res.data == 200) {
+            navigate('/home')
+          } 
+        })
+        .catch((err) => console.log(err))
+
+        // Cleanup fonction
+        return () => {
+          cancelTokenSource.cancel('Requete annulée via la fonction de cleanup');
+        };
+
+      }, [formData]);
+
+
+    const handleChange = (e) => {
+        setValue(prev => ({...prev, [e.target.name]: e.target.value}))
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+
+        const validPassword = new RegExp(/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!?])(.{12,})/)
+
+        if (validPassword.test(value.password)) {
+          console.log('Pass is OK')
+          setError(null)
+
+          if (value.username != '' && value.password != '') {
+              const data = new FormData(e.target)
+              const newFormData = Object.fromEntries(data.entries())
+              console.log(newFormData)
+              setFormData(newFormData)
+          } else {
+              setError('Missing fields')
+          }
+        } else {
+          setError('Password not OK')
+        }
+    }
+
+    console.log(value.password)
+
+    return (
+      <>
+        <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+          <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+            <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+              Connexion
+            </h2>
+          </div>
+  
+          <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+            <form onSubmit={handleSubmit} className="w-60 space-y-6" action="#" method="POST">
+              <div>
+                <div className="flex items-center justify-between">
+                  <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
+                      Username
+                  </label>
+                </div>
+                <div className="mt-2">
+                  <input
+                    id="username"
+                    name="username"
+                    type="username"
+                    autoComplete="username"
+                    onChange={handleChange}
+                    required
+                    className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+              </div>
+  
+              <div>
+                <div className="flex items-center justify-between">
+                  <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+                    Password
+                  </label>
+                  {/* <div className="text-sm">
+                    <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
+                      Forgot password?
+                    </a>
+                  </div> */}
+                </div>
+                <div className="mt-2">
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    onChange={handleChange}
+                    required
+                    className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+              </div>
+  
+              {error && 
+                <p className='text-red-800'>{error}</p>
+              }
+
+              <div>
+                <button
+                  type="submit"
+                  className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                  Login
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </>
+    )
+  }
